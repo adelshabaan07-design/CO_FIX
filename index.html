@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" id="htmlRoot">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CO-FIX — Smart Community Action Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+      :root {
+        --blue: #2563eb;
+        --cyan: #38bdf8;
+        --bg: #f8fafc;
+        --surface: #ffffff;
+        --text: #0f172a;
+        --muted: #64748b;
+        --line: #e2e8f0;
+        --soft: #eff6ff;
+        --shadow: 0 10px 30px rgba(15,23,42,0.08);
+        --card-bg: #ffffff;
+      }
+
+      body.dark {
+        --bg: #0b1329;
+        --surface: #111e38;
+        --text: #f8fafc;
+        --muted: #94a3b8;
+        --line: #1e2d4a;
+        --soft: #1e3a8a4d;
+        --shadow: 0 15px 40px rgba(0,0,0,.5);
+        --card-bg: #152442;
+      }
+
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html { scroll-behavior: smooth; }
+
+      body {
+        font-family: 'Inter', 'Cairo', sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        transition: background 0.3s, color 0.3s;
+        line-height: 1.6;
+        padding-top: 80px; /* مسافة لكي لا يختفي المحتوى تحت الناف بار الثابتة */
+        overflow-x: hidden;
+      }
+
+      /* RGB TOP ANIMATED BAR (ثابت بالأعلى تماماً) */
+      .rgb-top-bar {
+        height: 4px; width: 100%; position: fixed; top: 0; left: 0; z-index: 100000;
+        background: linear-gradient(90deg, #ff007f, #7928ca, #00dfd8, #0070f3, #ff007f);
+        background-size: 300% 100%;
+        animation: rgbGradient 4s linear infinite;
+      }
+      @keyframes rgbGradient {
+        0% { background-position: 0% 0%; }
+        100% { background-position: 300% 0%; }
+      }
+
+      /* NAVBAR (ثابتة تماماً ولا تتحرك أبداً عند السكرول) */
+      .navbar {
+        position: fixed !important;
+        top: 4px !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 72px !important;
+        z-index: 99999 !important;
+        display: flex; 
+        align-items: center; 
+        justify-content: space-between; 
+        padding: 0 5%;
+        background: rgba(255, 255, 255, 0.95); 
+        border-bottom: 1px solid var(--line); 
+        backdrop-filter: blur(15px);
+      }
+      body.dark .navbar { 
+        background: rgba(11, 19, 41, 0.95); 
+      }
+      
+      .logo { display: flex; align-items: center; gap: 8px; text-decoration: none; position: relative; }
+      .logo img { height: 38px; object-fit: contain; }
+
+      .rgb-logo-accent {
+        position: absolute; bottom: -6px; left: 0;
+        width: 100px; height: 3px;
+        background: linear-gradient(90deg, #ff007f, #38bdf8, #2563eb);
+        border-radius: 4px;
+        box-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+      }
+
+      .nav-links { display: flex; align-items: center; gap: 6px; list-style: none; }
+      .nav-links a, .nav-btn {
+        text-decoration: none; color: var(--text); padding: 7px 12px; border-radius: 20px; font-size: 13.5px; font-weight: 600;
+        background: transparent; border: 1px solid transparent; cursor: pointer; transition: .2s;
+        white-space: nowrap;
+      }
+      .nav-links a:hover, .nav-btn:hover { background: var(--soft); border-color: var(--line); color: var(--cyan); }
+      
+      .bell-badge { position: relative; display: inline-flex; align-items: center; justify-content: center; }
+      .notif-count {
+        background: #ef4444; color: white; font-size: 10px; font-weight: 800; border-radius: 50%;
+        padding: 2px 6px; margin-left: 3px;
+      }
+
+      /* MENU TOGGLE BUTTON (☰) FOR MOBILE */
+      .menu-toggle-btn {
+        display: none;
+        background: var(--soft);
+        border: 1px solid var(--line);
+        color: var(--text);
+        font-size: 20px;
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        cursor: pointer;
+        align-items: center;
+        justify-content: center;
+        transition: 0.2s;
+      }
+      .menu-toggle-btn:hover { background: var(--line); color: var(--cyan); }
+
+      /* HERO SECTION */
+      .home-content {
+        min-height: 80vh; display: grid; grid-template-columns: 1.1fr 0.9fr; align-items: center; padding: 40px 5%; gap: 30px;
+      }
+      
+      .caption h1 { font-size: clamp(28px, 4vw, 48px); font-weight: 900; line-height: 1.15; }
+      
+      .caption h2 { 
+        color: var(--cyan); font-size: clamp(26px, 3.5vw, 38px); margin: 6px 0 14px; font-weight: 900; 
+        background: linear-gradient(90deg, #2563eb, #38bdf8, #00dfd8);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        display: inline-block;
+      }
+      
+      .caption p { color: var(--muted); font-size: clamp(14px, 1.5vw, 16px); margin-bottom: 22px; max-width: 540px; line-height: 1.7; }
+      
+      .caption .btn-main {
+        background: linear-gradient(135deg, #2563eb, #0284c7); color: white; border: none; padding: 12px 24px; 
+        border-radius: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 20px rgba(37,99,235,0.3); 
+        transition: 0.2s; text-decoration: none; display: inline-block; font-size: 14px;
+      }
+      .caption .btn-main:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(37,99,235,0.4); }
+      
+      .hero-image { max-width: 400px; margin: 0 auto; width: 100%; }
+      .hero-image img { 
+        width: 100%; height: auto; max-height: 320px; object-fit: cover; border-radius: 18px; 
+        box-shadow: var(--shadow); border: 2px solid var(--line); 
+      }
+
+      /* STATS BAR */
+      .stats-bar {
+        display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; max-width: 1100px; margin: 0 auto 50px; padding: 0 5%;
+      }
+      .stat-card {
+        background: var(--card-bg); border: 1px solid var(--line); padding: 18px 12px; border-radius: 16px; text-align: center; box-shadow: var(--shadow);
+      }
+      .stat-card h3 { font-size: clamp(20px, 3vw, 26px); font-weight: 900; color: var(--cyan); margin-bottom: 4px; }
+      .stat-card p { font-size: 12px; color: var(--muted); font-weight: 600; }
+
+      /* STEPS */
+      #steps { padding: 60px 5%; text-align: center; background: var(--surface); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+      .main-title { font-size: clamp(24px, 3.5vw, 36px); font-weight: 900; margin-bottom: 8px; }
+      .section-subtitle { color: var(--muted); font-size: 14px; margin-bottom: 35px; }
+
+      .steps-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; text-align: left; }
+      html[dir="rtl"] .steps-container { text-align: right; }
+      .step-card { 
+        background: var(--card-bg); border: 1px solid var(--line); padding: 26px 20px; border-radius: 18px; 
+        box-shadow: var(--shadow); transition: transform 0.3s, border-color 0.3s;
+      }
+      .step-card:hover { transform: translateY(-4px); border-color: var(--cyan); }
+      .icon-wrapper { 
+        width: 50px; height: 50px; border-radius: 14px; background: var(--soft); color: var(--cyan); 
+        display: grid; place-items: center; font-size: 20px; margin-bottom: 16px; 
+      }
+      .step-title { font-size: 18px; margin-bottom: 8px; font-weight: 800; }
+      .step-description { color: var(--muted); font-size: 13px; line-height: 1.6; }
+
+      /* PROJECTS / IMPACT */
+      #projects { padding: 70px 5%; }
+      .impact-header-title { font-size: clamp(24px, 3.5vw, 38px); font-weight: 900; color: var(--cyan); text-align: center; margin-bottom: 6px; }
+      .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 30px; }
+      .cards { 
+        background: var(--card-bg); border: 1px solid var(--line); padding: 18px; border-radius: 18px; 
+        box-shadow: var(--shadow); transition: transform 0.3s;
+      }
+      .cards:hover { transform: translateY(-4px); }
+      .cards img { width: 100%; height: 200px; object-fit: cover; border-radius: 12px; margin-bottom: 12px; }
+      .cards p { font-size: 14px; font-weight: 600; line-height: 1.6; color: var(--text); }
+
+      /* CALL TO ACTION */
+      #ff { 
+        padding: 60px 5%; text-align: center; background: linear-gradient(135deg, #1e40af, #0284c7); 
+        color: white; border-radius: 24px; margin: 40px 5%; box-shadow: 0 15px 35px rgba(2,132,199,0.25);
+      }
+      #ff h1 { font-size: clamp(22px, 3.5vw, 36px); font-weight: 900; margin-bottom: 10px; }
+      #ff p { font-size: 15px; opacity: 0.9; margin-bottom: 20px; }
+      #ff .btn-cta { 
+        background: white; color: #1d4ed8; padding: 12px 24px; border-radius: 12px; font-weight: 800; 
+        text-decoration: none; display: inline-block; transition: 0.2s; font-size: 14px;
+      }
+      #ff .btn-cta:hover { background: #f1f5f9; transform: scale(1.02); }
+
+      footer { padding: 25px; text-align: center; font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); }
+
+      /* ================= CHATBOT WIDGET (BOTTOM RIGHT) ================= */
+      .chatbot-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+        font-family: 'Inter', 'Cairo', sans-serif;
+      }
+
+      .chatbot-toggle-btn {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #2563eb, #0284c7);
+        color: white;
+        border: none;
+        box-shadow: 0 10px 25px rgba(37,99,235,0.4);
+        cursor: pointer;
+        display: grid;
+        place-items: center;
+        font-size: 22px;
+        transition: transform 0.3s, box-shadow 0.3s;
+        position: relative;
+      }
+      .chatbot-toggle-btn::after {
+        content: '';
+        position: absolute;
+        inset: -3px;
+        border-radius: 50%;
+        background: linear-gradient(90deg, #ff007f, #38bdf8, #2563eb);
+        z-index: -1;
+        opacity: 0.7;
+        animation: rgbGradient 4s linear infinite;
+      }
+
+      .chatbot-window {
+        position: absolute;
+        bottom: 70px;
+        right: 0;
+        width: 330px;
+        max-width: calc(100vw - 30px);
+        height: 430px;
+        max-height: 70vh;
+        background: var(--card-bg);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        box-shadow: 0 20px 45px rgba(0,0,0,0.3);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        transform: scale(0);
+        transform-origin: bottom right;
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+
+      .chatbot-window.active {
+        transform: scale(1);
+      }
+
+      .chatbot-header {
+        background: linear-gradient(135deg, #1e40af, #0284c7);
+        color: white;
+        padding: 14px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .chatbot-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 800;
+        font-size: 14px;
+      }
+
+      .chatbot-close {
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+      }
+
+      .chatbot-messages {
+        flex: 1;
+        padding: 14px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        font-size: 13px;
+      }
+
+      .chat-msg {
+        max-width: 85%;
+        padding: 10px 14px;
+        border-radius: 14px;
+        line-height: 1.5;
+        word-wrap: break-word;
+      }
+
+      .chat-msg.bot {
+        background: var(--soft);
+        color: var(--text);
+        align-self: flex-start;
+        border-bottom-left-radius: 4px;
+        border: 1px solid var(--line);
+      }
+
+      .chat-msg.user {
+        background: var(--blue);
+        color: white;
+        align-self: flex-end;
+        border-bottom-right-radius: 4px;
+      }
+
+      .chatbot-input-area {
+        padding: 10px;
+        background: var(--surface);
+        border-top: 1px solid var(--line);
+        display: flex;
+        gap: 6px;
+      }
+
+      .chatbot-input-area input {
+        flex: 1;
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: var(--bg);
+        color: var(--text);
+        font-size: 13px;
+        outline: none;
+      }
+
+      .chatbot-send-btn {
+        background: var(--blue);
+        color: white;
+        border: none;
+        padding: 0 14px;
+        border-radius: 10px;
+        cursor: pointer;
+      }
+
+      /* RESPONSIVE MOBILE BREAKPOINTS */
+      @media(max-width: 900px) {
+        .menu-toggle-btn { display: flex; }
+
+        .nav-links {
+          position: fixed;
+          top: 76px;
+          right: -100%;
+          width: 280px;
+          height: calc(100vh - 76px);
+          background: var(--card-bg);
+          border-left: 1px solid var(--line);
+          flex-direction: column;
+          align-items: stretch;
+          padding: 25px 20px;
+          gap: 12px;
+          box-shadow: var(--shadow);
+          transition: right 0.3s ease-in-out;
+          z-index: 99;
+          overflow-y: auto;
+        }
+
+        html[dir="rtl"] .nav-links {
+          right: auto;
+          left: -100%;
+          border-left: none;
+          border-right: 1px solid var(--line);
+          transition: left 0.3s ease-in-out;
+        }
+
+        .nav-links.active { right: 0; }
+        html[dir="rtl"] .nav-links.active { left: 0; }
+
+        .nav-links a, .nav-btn {
+          width: 100%;
+          text-align: center;
+          padding: 12px;
+          font-size: 15px;
+          border: 1px solid var(--line);
+          border-radius: 12px;
+        }
+
+        .home-content { grid-template-columns: 1fr; text-align: center; padding-top: 20px; }
+        .caption p { margin: 0 auto 22px; }
+        .hero-image { max-width: 320px; margin-top: 20px; }
+        .stats-bar { grid-template-columns: 1fr; gap: 10px; }
+        .chatbot-window { width: calc(100vw - 30px); right: -5px; }
+      }
+    </style>
+</head>
+<body>
+
+<!-- RGB TOP ANIMATED BAR -->
+<div class="rgb-top-bar"></div>
+
+<!-- NAVBAR (الثابتة تماماً) -->
+<div class="navbar">
+  <a href="index.html" class="logo">
+    <img src="images/co-fix-logo.png" alt="Co-Fix Logo">
+    <div class="rgb-logo-accent"></div>
+  </a>
+
+  <button class="menu-toggle-btn" id="menuToggleBtn" title="Toggle Navigation">
+    <i class="fa-solid fa-bars"></i>
+  </button>
+
+  <ul class="nav-links" id="navMenu">
+    <li><a href="#home" data-key="navHome">Home</a></li>
+    <li><a href="#steps" data-key="navSteps">Steps</a></li>
+    <li><a href="#projects" data-key="navWork">Our Work</a></li>
+    <li><a href="report.html" data-key="navReport">Report Problem</a></li>
+    <li><a href="voulnteer.html" data-key="navVolunteer">Volunteer</a></li>
+    <li><a href="about.html" data-key="navAbout">About Us 👤</a></li>
+    <li class="bell-badge">
+      <a href="problem.html" title="Notifications">🔔 <span data-key="navNotif">Notifications</span> <span id="notif" class="notif-count">0</span></a>
+    </li>
+    <li><button class="nav-btn" id="langToggle">العربية</button></li>
+    <li><button class="nav-btn" id="themeToggle" title="Toggle Theme"><i class="fa-solid fa-moon"></i> Theme</button></li>
+  </ul>
+</div>
+
+<!-- HOME SECTION -->
+<div id="home" class="home-content">
+  <div class="caption">
+    <h1 data-key="welcomeText">Welcome To</h1>
+    <h2>CO-FIX</h2>
+    <p data-key="subText">
+      Join us for a cleaner, safer, and more sustainable world. CO-FIX connects citizens, artificial intelligence, and community volunteers to resolve urban complaints quickly and efficiently.
+    </p>
+    <a href="#steps" class="btn-main" data-key="exploreBtn">EXPLORE PROCESS →</a>
+  </div>
+  <div class="hero-image">
+    <img src="images/image.png" alt="CO-FIX Impact Community">
+  </div>
+</div>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat-card">
+    <h3 id="statReports">1,250+</h3>
+    <p data-key="stat1">Community Reports</p>
+  </div>
+  <div class="stat-card">
+    <h3 id="statResolved">980+</h3>
+    <p data-key="stat2">Issues Resolved</p>
+  </div>
+  <div class="stat-card">
+    <h3>500+</h3>
+    <p data-key="stat3">Active Volunteers</p>
+  </div>
+</div>
+
+<!-- STEPS SECTION -->
+<div id="steps">
+    <h1 class="main-title">
+        <i class="fas fa-lightbulb" style="color: #f59e0b; margin-right: 6px;"></i>
+        <span data-key="stepsTitle">How Does CO-FIX Work?</span>
+    </h1>
+    <p class="section-subtitle" data-key="stepsSub">Three simple and transparent steps to transform local complaints into positive community results.</p>
+
+    <div class="steps-container">
+        <div class="step-card">
+            <div class="icon-wrapper"><i class="fas fa-camera"></i></div>
+            <h2 class="step-title" data-key="step1Title">1. Report the Problem</h2>
+            <p class="step-description" data-key="step1Desc">Citizens capture a live photo of the issue, tag the geolocation, and submit the details through our AI-assisted report form.</p>
+        </div>
+        <div class="step-card">
+            <div class="icon-wrapper"><i class="fas fa-users"></i></div>
+            <h2 class="step-title" data-key="step2Title">2. Volunteers Review</h2>
+            <p class="step-description" data-key="step2Desc">Volunteers and local teams review the report, verify the information, and coordinate the most effective maintenance solution.</p>
+        </div>
+        <div class="step-card">
+            <div class="icon-wrapper"><i class="fas fa-check-circle"></i></div>
+            <h2 class="step-title" data-key="step3Title">3. Verified Resolution</h2>
+            <p class="step-description" data-key="step3Desc">The issue gets repaired or cleaned. Clear before-and-after photos are published to transparently document the real-world impact.</p>
+        </div>
+    </div>
+</div>
+
+<!-- PROJECTS SECTION -->
+<div id="projects">
+  <h1 class="impact-header-title" data-key="impactTitle">CO-FIX Impact</h1>
+  <p style="color:var(--muted); text-align:center; font-size: 14px;" data-key="impactSub">Real Stories: From Problem to Solution</p>
+            
+  <div class="cards-grid">
+    <div class="cards">
+      <img src="images/f935ed38-050c-4719-afb3-dc2569c3edc4.jpg" alt="Street Light Repair">
+      <p data-key="project1">⚡ Fixing Street Light: The damaged street light was reported by local residents, repaired by municipal teams, and is now fully working to keep streets safe at night.</p>
+    </div>
+    <div class="cards">
+      <img src="images/4264f86d-4fa5-41ba-88ac-f49121001f81.jpg" alt="Cleaning Street">
+      <p data-key="project2">🧹 Cleaning the Street: Hazardous debris and accumulated trash were safely removed through combined community volunteer efforts.</p>
+    </div>
+  </div>
+</div>
+
+<!-- CALL TO ACTION -->
+<div id="ff">
+    <div class="rr">
+      <h1 data-key="ctaTitle">Let's Fix Our Country Together 💪</h1>
+      <p data-key="ctaSub">Be an active citizen. Report issues around you, join volunteer drives, and build a better future.</p>
+      <a href="report.html" class="btn-cta" data-key="ctaBtn">← Start Reporting Problem</a>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer id="footer">
+  <p data-key="footerText">© 2026 CO-FIX — Built with care for a better world 🌍</p>
+</footer>
+
+<!-- CHATBOT WIDGET (BOTTOM RIGHT) -->
+<div class="chatbot-container">
+  <button class="chatbot-toggle-btn" id="chatbotToggle" title="Open AI Assistant">
+    <i class="fa-solid fa-robot"></i>
+  </button>
+  
+  <div class="chatbot-window" id="chatbotWindow">
+    <div class="chatbot-header">
+      <div class="chatbot-title">
+        <i class="fa-solid fa-sparkles"></i> CO-FIX AI Assistant
+      </div>
+      <button class="chatbot-close" id="chatbotClose"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="chatbot-messages" id="chatbotMessages">
+      <div class="chat-msg bot">Hello! 👋 I'm your CO-FIX AI assistant. Ask me anything in English or Arabic! <br><br> أهلاً بك! أنا مساعد الذكاء الاصطناعي لمنصة CO-FIX. اسألني أي سؤال بالعربي أو الإنجليزي!</div>
+    </div>
+    <div class="chatbot-input-area">
+      <input type="text" id="chatInput" placeholder="Type or ask a question / اكتب سؤالك...">
+      <button class="chatbot-send-btn" id="chatSend"><i class="fa-solid fa-paper-plane"></i></button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Mobile Drawer Menu Toggle
+const menuToggleBtn = document.getElementById('menuToggleBtn');
+const navMenu = document.getElementById('navMenu');
+
+menuToggleBtn.onclick = () => {
+  navMenu.classList.toggle('active');
+  const isOpen = navMenu.classList.contains('active');
+  menuToggleBtn.innerHTML = isOpen ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-bars"></i>';
+};
+
+document.querySelectorAll('#navMenu a').forEach(link => {
+  link.onclick = () => {
+    navMenu.classList.remove('active');
+    menuToggleBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+  };
+});
+
+let problems = JSON.parse(localStorage.getItem("problems")) || [];
+document.getElementById("notif").textContent = problems.length;
+document.getElementById("statReports").textContent = 1250 + problems.length;
+document.getElementById("statResolved").textContent = 980 + problems.length;
+
+// AI CHATBOT LOGIC
+const chatbotToggle = document.getElementById('chatbotToggle');
+const chatbotWindow = document.getElementById('chatbotWindow');
+const chatbotClose = document.getElementById('chatbotClose');
+const chatbotMessages = document.getElementById('chatbotMessages');
+const chatInput = document.getElementById('chatInput');
+const chatSend = document.getElementById('chatSend');
+
+chatbotToggle.onclick = () => {
+  chatbotWindow.classList.toggle('active');
+};
+chatbotClose.onclick = () => {
+  chatbotWindow.classList.remove('active');
+};
+
+function appendMessage(text, sender) {
+  const msgDiv = document.createElement('div');
+  msgDiv.className = `chat-msg ${sender}`;
+  msgDiv.innerHTML = text;
+  chatbotMessages.appendChild(msgDiv);
+  chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+}
+
+function generateSmartReply(userText) {
+  const q = userText.toLowerCase().trim();
+  const isArabic = /[\u0600-\u06FF]/.test(userText);
+
+  if (q.includes('what is') || q.includes('who are') || q.includes('about') || q.includes('ماهي') || q.includes('ما هي') || q.includes('عن المنصة') || q.includes('تعريف')) {
+    return isArabic 
+      ? "منصة <b>CO-FIX</b> هي منصة مجتمعية ذكية تربط المواطنين والمؤسسات والمتطوعين والذكاء الاصطناعي لرصد وإصلاح مشكلات الشوارع والخدمات العامة فوراً."
+      : "<b>CO-FIX</b> is a smart civic platform that connects citizens, local authorities, volunteers, and AI to fix urban & public issues efficiently.";
+  }
+
+  if (q.includes('report') || q.includes('how to use') || q.includes('submit') || q.includes('بلغ') || q.includes('كيف') || q.includes('ابلاغ') || q.includes('أرسل')) {
+    return isArabic
+      ? "للإبلاغ عن مشكلة: اضغط على زر <b>'إبلاغ عن مشكلة'</b> من القائمة العلوية، ثم التقط صورة للمشكلة واكتب التفاصيل واضغط إرسال! ستصل فوراً للإشعارات."
+      : "To report an issue: Click on <b>'Report Problem'</b> in the top menu, upload or capture a photo, fill in the area and details, then click submit!";
+  }
+
+  if (q.includes('volunteer') || q.includes('join') || q.includes('help') || q.includes('تطوع') || q.includes('انضمام') || q.includes('مساعدة')) {
+    return isArabic
+      ? "يمكنك التطوع معنا بسهولة بالضغط على صفحة <b>'تطوع معنا'</b> والمشاركة في حملات الصيانة والتنظيف الميداني لمساعدة مجتمعك."
+      : "You can volunteer with us by clicking on <b>'Volunteer'</b> in the navigation bar to participate in local cleanup and repair campaigns!";
+  }
+
+  if (q.includes('notif') || q.includes('status') || q.includes('track') || q.includes('عدد') || q.includes('اشعار') || q.includes('بلاغات') || q.includes('قائمة')) {
+    return isArabic
+      ? `لديك حالياً <b>${problems.length}</b> بلاغات في قائمة الإشعارات 🔔. يمكنك الاطلاع عليها وإدارتها عبر الضغط على جرس الإشعارات.`
+      : `You currently have <b>${problems.length}</b> reported issues in your notifications 🔔. Click the bell icon at the top to view or clear them!`;
+  }
+
+  if (q.includes('contact') || q.includes('developer') || q.includes('support') || q.includes('مين') || q.includes('تواصل') || q.includes('مطور') || q.includes('الدعم')) {
+    return isArabic
+      ? "منصة CO-FIX تم تطويرها بأحدث تقنيات الويب لتفعيل دور التكنولوجيا في خدمة المجتمع. يمكنك التواصل معنا من خلال قسم 'عن المنصة'."
+      : "CO-FIX was built using modern web technology to empower civic action. You can connect with our team on the 'About Us' page.";
+  }
+
+  if (q.includes('hi') || q.includes('hello') || q.includes('hey') || q.includes('سلام') || q.includes('اهل') || q.includes('مرحبا') || q.includes('ازيك')) {
+    return isArabic
+      ? "أهلاً بك! 👋 كيف يمكنني مساعدتك اليوم في منصة CO-FIX؟"
+      : "Hello there! 👋 How can CO-FIX AI help you today?";
+  }
+
+  return isArabic
+    ? `أنا هنا لمساعدتك! يمكنك أن تسألني عن: <br>• كيفية الإبلاغ عن مشكلة 🚨<br>• الانضمام للمتطوعين 🤝<br>• متابعة البلاغات والإشعارات 🔔<br>• معلومات عن مشروع CO-FIX 🌍`
+    : `I'm your CO-FIX assistant! You can ask me about:<br>• How to report an issue 🚨<br>• How to join as a volunteer 🤝<br>• Checking active notifications 🔔<br>• General info about CO-FIX 🌍`;
+}
+
+function handleUserMessage() {
+  const text = chatInput.value.trim();
+  if (!text) return;
+  
+  appendMessage(text, 'user');
+  chatInput.value = '';
+
+  setTimeout(() => {
+    const reply = generateSmartReply(text);
+    appendMessage(reply, 'bot');
+  }, 400);
+}
+
+chatSend.onclick = handleUserMessage;
+chatInput.onkeypress = (e) => {
+  if (e.key === 'Enter') handleUserMessage();
+};
+
+const translations = {
+  en: {
+    navHome: "Home", navSteps: "Steps", navWork: "Our Work", navReport: "Report Problem", navVolunteer: "Volunteer", navAbout: "About Us 👤", navNotif: "Notifications",
+    welcomeText: "Welcome To",
+    subText: "Join us for a cleaner, safer, and more sustainable world. CO-FIX connects citizens, artificial intelligence, and community volunteers to resolve urban complaints quickly and efficiently.",
+    exploreBtn: "EXPLORE PROCESS →",
+    stat1: "Community Reports", stat2: "Issues Resolved", stat3: "Active Volunteers",
+    stepsTitle: "How Does CO-FIX Work?",
+    stepsSub: "Three simple and transparent steps to transform local complaints into positive community results.",
+    step1Title: "1. Report the Problem", step1Desc: "Citizens capture a live photo of the issue, tag the geolocation, and submit the details through our AI-assisted report form.",
+    step2Title: "2. Volunteers Review", step2Desc: "Volunteers and local teams review the report, verify the information, and coordinate the most effective maintenance solution.",
+    step3Title: "3. Verified Resolution", step3Desc: "The issue gets repaired or cleaned. Clear before-and-after photos are published to transparently document the real-world impact.",
+    impactTitle: "CO-FIX Impact", impactSub: "Real Stories: From Problem to Solution",
+    project1: "⚡ Fixing Street Light: The damaged street light was reported by local residents, repaired by municipal teams, and is now fully working to keep streets safe at night.",
+    project2: "🧹 Cleaning the Street: Hazardous debris and accumulated trash were safely removed through combined community volunteer efforts.",
+    ctaTitle: "Let's Fix Our Country Together 💪",
+    ctaSub: "Be an active citizen. Report issues around you, join volunteer drives, and build a better future.",
+    ctaBtn: "← Start Reporting Problem",
+    footerText: "© 2026 CO-FIX — Built with care for a better world 🌍"
+  },
+  ar: {
+    navHome: "الرئيسية", navSteps: "الخطوات", navWork: "أعمالنا", navReport: "إبلاغ عن مشكلة", navVolunteer: "تطوع معنا", navAbout: "عن المنصة 👤", navNotif: "الإشعارات",
+    welcomeText: "أهلاً بك في",
+    subText: "انضم إلينا من أجل عالم أنظف وأكثر أماناً واستدامة. تجمع منصة CO-FIX بين المواطنين، والذكاء الاصطناعي، والمتطوعين لحل مشكلات الشارع والمجتمع بسرعة وكفاءة عالية.",
+    exploreBtn: "استكشف دورة العمل ←",
+    stat1: "بلاغات المجتمع", stat2: "حالات تم حلها", stat3: "متطوع نشط",
+    stepsTitle: "كيف تعمل منصة CO-FIX؟",
+    stepsSub: "ثلاث خطوات بسيطة وشفافة لتحويل البلاغات إلى نتائج ومبادرات إيجابية ملموسة.",
+    step1Title: "1. الإبلاغ عن المشكلة", step1Desc: "يقوم المواطن بالتقاط صورة مباشرة للمشكلة، وتحديد الموقع الجغرافي تلقائياً، وإرسال البيانات بكل سهولة.",
+    step2Title: "2. مراجعة المتطوعين", step2Desc: "يفحص الفريق والمتطوعون البيانات المرفقة، ويتم تقييم حالة البلاغ والتنسيق الميداني للحل.",
+    step3Title: "3. الحل والتوثيق الميداني", step3Desc: "إصلاح التلفيات وتنظيف المنطقة، ثم عرض صور (قبل وبعد) لنشر الأثر والنتيجة بشفافية أمام الجميع.",
+    impactTitle: "تأثير CO-FIX الميداني", impactSub: "قصص نجاح واقعية: من البلاغ إلى الحل",
+    project1: "⚡ إصلاح أعمدة الإنارة: تم البلاغ عن عمود معطل، وقامت الفرق الميدانية بصيانته لتأمين الطريق وإضاءته ليلاً.",
+    project2: "🧹 تنظيف الشوارع: رفع المخلفات القابلة للخطورة والقمامة وتنظيف الطرق عبر المبادرة المجتمعية.",
+    ctaTitle: "لنصلح بلدنا معاً 💪",
+    ctaSub: "كن مواطناً إيجابياً ورائداً في مجتمعك. أبلغ عن المشكلات وشارك في مبادرات التغيير الحقيقي.",
+    ctaBtn: "← ابدأ بالإبلاغ عن مشكلة",
+    footerText: "© 2026 CO-FIX — صُمم بعناية من أجل بيئة ومجتمع أفضل 🌍"
+  }
+};
+
+let currentLang = localStorage.getItem('cofix-lang') || 'en';
+
+function setLanguage(lang) {
+  currentLang = lang;
+  localStorage.setItem('cofix-lang', lang);
+  document.getElementById('htmlRoot').setAttribute('lang', lang);
+  document.getElementById('htmlRoot').setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+  document.getElementById('langToggle').textContent = lang === 'en' ? 'العربية' : 'English';
+
+  document.querySelectorAll('[data-key]').forEach(el => {
+    const key = el.getAttribute('data-key');
+    if (translations[lang][key]) {
+      el.innerHTML = translations[lang][key];
+    }
+  });
+}
+
+document.getElementById('langToggle').onclick = () => {
+  setLanguage(currentLang === 'en' ? 'ar' : 'en');
+};
+
+setLanguage(currentLang);
+
+const themeToggle = document.getElementById('themeToggle');
+if(localStorage.getItem("cofix-theme")==="dark"){
+  document.body.classList.add("dark");
+  themeToggle.innerHTML='<i class="fa-solid fa-sun"></i> Theme';
+}
+themeToggle.onclick=()=>{
+  document.body.classList.toggle("dark");
+  const dark=document.body.classList.contains("dark");
+  themeToggle.innerHTML= dark ? '<i class="fa-solid fa-sun"></i> Theme' : '<i class="fa-solid fa-moon"></i> Theme';
+  localStorage.setItem("cofix-theme", dark?"dark":"light");
+};
+</script>
+
+</body>
+</html>

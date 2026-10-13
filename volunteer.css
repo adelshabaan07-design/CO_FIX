@@ -1,0 +1,86 @@
+/*******************************start volunteer ****************************************************************/
+:root {
+  --primary: #151B54;
+  --accent: #2B60DE;
+  --bg: #F5F5F5;
+}
+
+body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    background-color: #F5F5F5;
+}
+
+.title {
+    text-align: center;
+    padding: 30px;
+    color: #151B54;
+    font-weight: 600;
+}
+
+#table-container {
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+table {
+    width: 90%;
+    border-collapse: collapse;
+    color: #151B54;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 2px solid #151B54;
+}
+
+th {
+    background: #151B54;
+    color: white;
+
+    padding: 20px;
+    font-size: 18px;
+}
+
+td {
+    padding: 20px;
+    text-align: center;
+
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+}
+
+
+tr:hover td {
+    background: rgba(43, 96, 222, 0.08);
+}
+
+
+td ul {
+    text-align: left;
+    padding-left: 20px;
+    margin: 0;
+}
+
+td ul li {
+    margin-bottom: 8px;
+    color: #151B54;
+}
+
+a {
+    text-decoration: none;
+    color: white;
+
+    background: #151B54;
+    padding: 10px 18px;
+    border-radius: 10px;
+
+    transition: 0.3s;
+}
+
+a:hover {
+    background: #2B60DE;
+    transform: scale(1.05);
+}
+
+/*******************************End volunteer ****************************************************************/

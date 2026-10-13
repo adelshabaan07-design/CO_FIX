@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" id="htmlRoot">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CO-FIX — Volunteer Guidelines 📚</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --blue: #2563eb;
+            --cyan: #38bdf8;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text: #0f172a;
+            --muted: #64748b;
+            --line: #e2e8f0;
+            --soft: #eff6ff;
+            --shadow: 0 10px 30px rgba(15,23,42,0.08);
+            --card-bg: #ffffff;
+        }
+
+        body.dark {
+            --bg: #0b1329;
+            --surface: #111e38;
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --line: #1e2d4a;
+            --soft: #1e3a8a4d;
+            --shadow: 0 15px 40px rgba(0,0,0,.5);
+            --card-bg: #152442;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', 'Cairo', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            transition: background 0.3s, color 0.3s;
+            line-height: 1.6;
+            padding-top: 100px;
+            padding-bottom: 50px;
+            overflow-x: hidden;
+        }
+
+        /* RGB TOP ANIMATED BAR */
+        .rgb-top-bar {
+            height: 4px; width: 100%; position: fixed; top: 0; left: 0; z-index: 100000;
+            background: linear-gradient(90deg, #ff007f, #7928ca, #00dfd8, #0070f3, #ff007f);
+            background-size: 300% 100%;
+            animation: rgbGradient 4s linear infinite;
+        }
+        @keyframes rgbGradient {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 300% 0%; }
+        }
+
+        /* NAVBAR (ثابتة في أعلى الصفحة دائماً) */
+        .navbar {
+            position: fixed !important;
+            top: 4px !important;
+            left: 0 !important;
+            right: 0 !important;
+            height: 72px !important;
+            z-index: 99999 !important;
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 0 5%;
+            background: rgba(255, 255, 255, 0.95); 
+            border-bottom: 1px solid var(--line); 
+            backdrop-filter: blur(15px);
+        }
+        body.dark .navbar { background: rgba(11, 19, 41, 0.95); }
+        
+        .logo { display: flex; align-items: center; gap: 8px; text-decoration: none; position: relative; }
+        .logo img { height: 38px; object-fit: contain; }
+
+        .rgb-logo-accent {
+            position: absolute; bottom: -6px; left: 0;
+            width: 100px; height: 3px;
+            background: linear-gradient(90deg, #ff007f, #38bdf8, #2563eb);
+            border-radius: 4px;
+            box-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+        }
+
+        .nav-links { display: flex; align-items: center; gap: 6px; list-style: none; }
+        .nav-links a, .nav-btn {
+            text-decoration: none; color: var(--text); padding: 7px 12px; border-radius: 20px; font-size: 13.5px; font-weight: 600;
+            background: transparent; border: 1px solid transparent; cursor: pointer; transition: .2s;
+            white-space: nowrap;
+        }
+        .nav-links a:hover, .nav-btn:hover { background: var(--soft); border-color: var(--line); color: var(--cyan); }
+        
+        .bell-badge { position: relative; display: inline-flex; align-items: center; justify-content: center; }
+        .notif-count {
+            background: #ef4444; color: white; font-size: 10px; font-weight: 800; border-radius: 50%;
+            padding: 2px 6px; margin-left: 3px;
+        }
+
+        /* MENU TOGGLE BUTTON (☰) FOR MOBILE */
+        .menu-toggle-btn {
+            display: none;
+            background: var(--soft);
+            border: 1px solid var(--line);
+            color: var(--text);
+            font-size: 20px;
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+        .menu-toggle-btn:hover { background: var(--line); color: var(--cyan); }
+
+        /* GUIDELINES PAGE CONTENT CONTAINER */
+        .guidelines-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-header h1 {
+            font-size: clamp(26px, 4vw, 38px);
+            font-weight: 900;
+            color: var(--cyan);
+            background: linear-gradient(90deg, #2563eb, #38bdf8, #00dfd8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            color: var(--muted);
+            font-size: 15px;
+        }
+
+        /* MODERN TABLE WRAPPER */
+        .table-card {
+            background: var(--card-bg);
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 14px;
+        }
+        html[dir="rtl"] table { text-align: right; }
+
+        th {
+            background: linear-gradient(135deg, #1e40af, #0284c7);
+            color: white;
+            padding: 16px 20px;
+            font-weight: 800;
+            font-size: 15px;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 20px;
+            border-bottom: 1px solid var(--line);
+            vertical-align: top;
+            color: var(--text);
+        }
+
+        tr:last-child td { border-bottom: none; }
+
+        tr:hover td {
+            background: var(--soft);
+        }
+
+        .problem-type-badge {
+            font-weight: 800;
+            font-size: 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        ul.instructions-list {
+            list-style-type: disc;
+            padding-left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        html[dir="rtl"] ul.instructions-list {
+            padding-left: 0;
+            padding-right: 20px;
+        }
+
+        ul.instructions-list li {
+            color: var(--muted);
+            font-size: 13.5px;
+            font-weight: 500;
+        }
+
+        .guide-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--blue);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 13px;
+            box-shadow: 0 4px 12px rgba(37,99,235,0.2);
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+
+        .guide-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(37,99,235,0.3);
+        }
+
+        /* RESPONSIVE MOBILE BREAKPOINTS */
+        @media(max-width: 900px) {
+            .menu-toggle-btn { display: flex; }
+
+            .nav-links {
+                position: fixed;
+                top: 76px;
+                right: -100%;
+                width: 280px;
+                height: calc(100vh - 76px);
+                background: var(--card-bg);
+                border-left: 1px solid var(--line);
+                flex-direction: column;
+                align-items: stretch;
+                padding: 25px 20px;
+                gap: 12px;
+                box-shadow: var(--shadow);
+                transition: right 0.3s ease-in-out;
+                z-index: 99;
+                overflow-y: auto;
+            }
+
+            html[dir="rtl"] .nav-links {
+                right: auto;
+                left: -100%;
+                border-left: none;
+                border-right: 1px solid var(--line);
+                transition: left 0.3s ease-in-out;
+            }
+
+            .nav-links.active { right: 0; }
+            html[dir="rtl"] .nav-links.active { left: 0; }
+
+            .nav-links a, .nav-btn {
+                width: 100%;
+                text-align: center;
+                padding: 12px;
+                font-size: 15px;
+                border: 1px solid var(--line);
+                border-radius: 12px;
+            }
+
+            table th, table td { padding: 14px 12px; font-size: 13px; }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- RGB TOP ANIMATED BAR -->
+<div class="rgb-top-bar"></div>
+
+<!-- NAVBAR (الناف بار الثابتة الموحدة في كل الصفحات) -->
+<div class="navbar">
+  <a href="index.html" class="logo">
+    <img src="images/co-fix-logo.png" alt="Co-Fix Logo">
+    <div class="rgb-logo-accent"></div>
+  </a>
+
+  <button class="menu-toggle-btn" id="menuToggleBtn" title="Toggle Navigation">
+    <i class="fa-solid fa-bars"></i>
+  </button>
+
+  <ul class="nav-links" id="navMenu">
+    <li><a href="index.html" data-key="navHome">Home</a></li>
+    <li><a href="index.html#steps" data-key="navSteps">Steps</a></li>
+    <li><a href="index.html#projects" data-key="navWork">Our Work</a></li>
+    <li><a href="report.html" data-key="navReport">Report Problem</a></li>
+    <li><a href="voulnteer.html" data-key="navVolunteer">Volunteer</a></li>
+    <li><a href="about.html" data-key="navAbout">About Us 👤</a></li>
+    <li class="bell-badge">
+      <a href="problem.html" title="Notifications">🔔 <span data-key="navNotif">Notifications</span> <span id="notif" class="notif-count">0</span></a>
+    </li>
+    <li><button class="nav-btn" id="langToggle">العربية</button></li>
+    <li><button class="nav-btn" id="themeToggle" title="Toggle Theme"><i class="fa-solid fa-moon"></i> Theme</button></li>
+  </ul>
+</div>
+
+<!-- GUIDELINES MAIN CONTAINER -->
+<div class="guidelines-container">
+    <div class="page-header">
+        <h1 data-key="pageTitle">📚 Problem Guidelines & Safety</h1>
+        <p data-key="pageSub">Professional instructions and safety standards for volunteers and civic problem solvers</p>
+    </div>
+
+    <div class="table-card">
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th data-key="thType">Problem Type</th>
+                        <th data-key="thInst">Instructions & Safety Rules</th>
+                        <th data-key="thGuide">Video Guide</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Plumbing -->
+                    <tr>
+                        <td>
+                            <span class="problem-type-badge">Plumbing 🚰</span>
+                        </td>
+                        <td>
+                            <ul class="instructions-list">
+                                <li data-key="p1_1">Turn off the main water supply immediately.</li>
+                                <li data-key="p1_2">Check for visible leaks and source pressure.</li>
+                                <li data-key="p1_3">Avoid using damaged or cracked pipes.</li>
+                                <li data-key="p1_4">Call a certified specialist if the issue persists.</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <a href="https://www.youtube.com/results?search_query=plumbing+repair" target="_blank" class="guide-btn">
+                                <i class="fa-brands fa-youtube"></i> <span data-key="searchBtn">Search 🔍</span>
+                            </a>
+                        </td>
+                    </tr>
+
+                    <!-- Electricity -->
+                    <tr>
+                        <td>
+                            <span class="problem-type-badge">Electricity ⚡</span>
+                        </td>
+                        <td>
+                            <ul class="instructions-list">
+                                <li data-key="e1_1">Turn off the main electricity breaker first.</li>
+                                <li data-key="e1_2">Never touch exposed or damaged wires.</li>
+                                <li data-key="e1_3">Keep water away from electrical sources.</li>
+                                <li data-key="e1_4">Use proper insulated safety tools at all times.</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <a href="https://www.youtube.com/results?search_query=fix+electricity+problem+safely" target="_blank" class="guide-btn">
+                                <i class="fa-brands fa-youtube"></i> <span data-key="searchBtn">Search 🔍</span>
+                            </a>
+                        </td>
+                    </tr>
+
+                    <!-- Cleaning -->
+                    <tr>
+                        <td>
+                            <span class="problem-type-badge">Cleaning 🧹</span>
+                        </td>
+                        <td>
+                            <ul class="instructions-list">
+                                <li data-key="c1_1">Wear heavy-duty gloves and protective gear.</li>
+                                <li data-key="c1_2">Use appropriate sanitizers and cleaning products.</li>
+                                <li data-key="c1_3">Dispose of waste properly in designated bins.</li>
+                                <li data-key="c1_4">Ensure the working area is well-ventilated.</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <a href="https://www.youtube.com/results?search_query=cleaning+tips+home" target="_blank" class="guide-btn">
+                                <i class="fa-brands fa-youtube"></i> <span data-key="searchBtn">Search 🔍</span>
+                            </a>
+                        </td>
+                    </tr>
+
+                    <!-- Animal Rescue -->
+                    <tr>
+                        <td>
+                            <span class="problem-type-badge">Animal Rescue 🐶</span>
+                        </td>
+                        <td>
+                            <ul class="instructions-list">
+                                <li data-key="a1_1">Approach the animal calmly and gently.</li>
+                                <li data-key="a1_2">Avoid sudden movements or loud noises.</li>
+                                <li data-key="a1_3">Offer food or clean water if safe to do so.</li>
+                                <li data-key="a1_4">Contact professional animal rescue organizations.</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <a href="https://www.youtube.com/results?search_query=animal+rescue+how+to+help" target="_blank" class="guide-btn">
+                                <i class="fa-brands fa-youtube"></i> <span data-key="searchBtn">Search 🔍</span>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+// Mobile Drawer Menu Toggle
+const menuToggleBtn = document.getElementById('menuToggleBtn');
+const navMenu = document.getElementById('navMenu');
+
+menuToggleBtn.onclick = () => {
+  navMenu.classList.toggle('active');
+  const isOpen = navMenu.classList.contains('active');
+  menuToggleBtn.innerHTML = isOpen ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-bars"></i>';
+};
+
+document.querySelectorAll('#navMenu a').forEach(link => {
+  link.onclick = () => {
+    navMenu.classList.remove('active');
+    menuToggleBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+  };
+});
+
+// Notifications count badge
+let problems = JSON.parse(localStorage.getItem("problems")) || [];
+document.getElementById("notif").textContent = problems.length;
+
+// Multilingual Support Dictionary
+const translations = {
+  en: {
+    navHome: "Home", navSteps: "Steps", navWork: "Our Work", navReport: "Report Problem", navVolunteer: "Volunteer", navAbout: "About Us 👤", navNotif: "Notifications",
+    pageTitle: "📚 Problem Guidelines & Safety",
+    pageSub: "Professional instructions and safety standards for volunteers and civic problem solvers",
+    thType: "Problem Type", thInst: "Instructions & Safety Rules", thGuide: "Video Guide",
+    searchBtn: "Search 🔍",
+    p1_1: "Turn off the main water supply immediately.", p1_2: "Check for visible leaks and source pressure.", p1_3: "Avoid using damaged or cracked pipes.", p1_4: "Call a certified specialist if the issue persists.",
+    e1_1: "Turn off the main electricity breaker first.", e1_2: "Never touch exposed or damaged wires.", e1_3: "Keep water away from electrical sources.", e1_4: "Use proper insulated safety tools at all times.",
+    c1_1: "Wear heavy-duty gloves and protective gear.", c1_2: "Use appropriate sanitizers and cleaning products.", c1_3: "Dispose of waste properly in designated bins.", c1_4: "Ensure the working area is well-ventilated.",
+    a1_1: "Approach the animal calmly and gently.", a1_2: "Avoid sudden movements or loud noises.", a1_3: "Offer food or clean water if safe to do so.", a1_4: "Contact professional animal rescue organizations."
+  },
+  ar: {
+    navHome: "الرئيسية", navSteps: "الخطوات", navWork: "أعمالنا", navReport: "إبلاغ عن مشكلة", navVolunteer: "تطوع معنا", navAbout: "عن المنصة 👤", navNotif: "الإشعارات",
+    pageTitle: "📚 إرشادات التعامل مع المشكلات والسلامة",
+    pageSub: "إرشادات مهنية ومعايير أمان متكاملة للمتطوعين وحلّاث المشكلات المجتمعية",
+    thType: "نوع المشكلة", thInst: "تعليمات وإرشادات الأمان", thGuide: "دليل الفيديو",
+    searchBtn: "بحث 🔍",
+    p1_1: "قم بإيقاف مصدر الرئيسية للمياه فوراً.", p1_2: "تحقق من أماكن التريب وضغط المياه.", p1_3: "تجنب تماماً استخدام الأنابيب المتضررة.", p1_4: "اتصل بأخصائي معتمد إذا لزم الأمر.",
+    e1_1: "افصل مصدر التيار الكهربائي العمومي أولاً.", e1_2: "لا تلمس الأسلاك المكشوفة أو التالفة نهائياً.", e1_3: "أبعد الماء تماماً عن مصادر الكهرباء.", e1_4: "استخدم أدوات الأمان والعزل المناسبة.",
+    c1_1: "ارتدِ قفازات العمل ومعدات الحماية اللازمة.", c1_2: "استخدم المنظفات ومواد التعقيم المناسبة.", c1_3: "تخلص من المخلفات بطريقة آمنة في الأماكن المخصصة.", c1_4: "تأكد من تهوية منطقة العمل جيداً.",
+    a1_1: "اقترب من الحيوان بهدوء ورفق تام.", a1_2: "تجنب الحركات المفاجئة أو الأصوات العالية.", a1_3: "قدم طعاماً أو ماءً نقياً إذا كان ذلك آمناً.", a1_4: "تواصل مع منظمات الرفق بالحيوان المختصة."
+  }
+};
+
+let currentLang = localStorage.getItem('cofix-lang') || 'en';
+
+function setLanguage(lang) {
+  currentLang = lang;
+  localStorage.setItem('cofix-lang', lang);
+  document.getElementById('htmlRoot').setAttribute('lang', lang);
+  document.getElementById('htmlRoot').setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+  document.getElementById('langToggle').textContent = lang === 'en' ? 'العربية' : 'English';
+
+  document.querySelectorAll('[data-key]').forEach(el => {
+    const key = el.getAttribute('data-key');
+    if (translations[lang][key]) {
+      el.innerHTML = translations[lang][key];
+    }
+  });
+}
+
+document.getElementById('langToggle').onclick = () => {
+  setLanguage(currentLang === 'en' ? 'ar' : 'en');
+};
+
+setLanguage(currentLang);
+
+const themeToggle = document.getElementById('themeToggle');
+if(localStorage.getItem("cofix-theme")==="dark"){
+  document.body.classList.add("dark");
+  themeToggle.innerHTML='<i class="fa-solid fa-sun"></i> Theme';
+}
+themeToggle.onclick=()=>{
+  document.body.classList.toggle("dark");
+  const dark=document.body.classList.contains("dark");
+  themeToggle.innerHTML= dark ? '<i class="fa-solid fa-sun"></i> Theme' : '<i class="fa-solid fa-moon"></i> Theme';
+  localStorage.setItem("cofix-theme", dark?"dark":"light");
+};
+</script>
+
+</body>
+</html>

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" id="htmlRoot">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CO-FIX — Reported Problems & Notifications</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --blue: #2563eb;
+            --cyan: #38bdf8;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text: #0f172a;
+            --muted: #64748b;
+            --line: #e2e8f0;
+            --shadow: 0 10px 30px rgba(15,23,42,0.08);
+            --card-bg: #ffffff;
+        }
+
+        body.dark {
+            --bg: #0b1329;
+            --surface: #111e38;
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --line: #1e2d4a;
+            --card-bg: #152442;
+            --shadow: 0 15px 40px rgba(0,0,0,.5);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', 'Cairo', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            padding-top: 75px;
+            transition: background 0.3s, color 0.3s;
+            line-height: 1.6;
+        }
+
+        /* RGB TOP ANIMATED BAR */
+        .rgb-top-bar {
+            height: 4px;
+            width: 100%;
+            position: fixed;
+            top: 0; left: 0; z-index: 101;
+            background: linear-gradient(90deg, #ff007f, #7928ca, #00dfd8, #0070f3, #ff007f);
+            background-size: 300% 100%;
+            animation: rgbGradient 4s linear infinite;
+        }
+
+        @keyframes rgbGradient {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 300% 0%; }
+        }
+
+        /* NAVBAR */
+        .navbar {
+            position: fixed; top: 4px; left: 0; right: 0; height: 71px; z-index: 100;
+            display: flex; align-items: center; justify-content: space-between; padding: 0 5%;
+            background: rgba(255,255,255,0.88); border-bottom: 1px solid var(--line); backdrop-filter: blur(15px);
+        }
+        body.dark .navbar { background: rgba(11,19,41,0.88); }
+        
+        .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .logo img { height: 40px; object-fit: contain; }
+
+        .nav-links { display: flex; align-items: center; gap: 8px; list-style: none; }
+        .nav-links a, .nav-btn {
+            text-decoration: none; color: var(--text); padding: 7px 13px; border-radius: 30px; font-size: 14px; font-weight: 600;
+            background: transparent; border: 1px solid transparent; cursor: pointer; transition: .2s;
+        }
+        .nav-links a:hover, .nav-btn:hover { background: var(--line); color: var(--cyan); }
+
+        .container {
+            max-width: 850px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .header-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header h1 {
+            font-size: clamp(26px, 4vw, 34px);
+            font-weight: 900;
+            color: var(--cyan);
+            margin-bottom: 6px;
+        }
+
+        .header p {
+            color: var(--muted);
+            font-size: 15px;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-custom {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .btn-back { background: var(--blue); color: white; }
+        .btn-back:hover { background: #1d4ed8; }
+
+        .btn-clear { background: #ef4444; color: white; }
+        .btn-clear:hover { background: #dc2626; }
+
+        .problems-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .problem-card {
+            background: var(--card-bg);
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            display: grid;
+            grid-template-columns: 1fr 150px;
+            gap: 20px;
+            align-items: center;
+            transition: transform 0.3s;
+        }
+
+        .problem-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--cyan);
+        }
+
+        .problem-info h3 {
+            font-size: 20px;
+            color: var(--cyan);
+            margin-bottom: 12px;
+            font-weight: 800;
+        }
+
+        .problem-info p {
+            margin: 6px 0;
+            font-size: 15px;
+            color: var(--text);
+        }
+
+        .problem-info p span {
+            font-weight: 750;
+            color: var(--muted);
+        }
+
+        .problem-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 14px;
+            object-fit: cover;
+            border: 1px solid var(--line);
+            background: var(--bg);
+        }
+
+        .no-image {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 70px 20px;
+            color: var(--muted);
+            font-size: 17px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow);
+        }
+
+        footer {
+            padding: 30px;
+            text-align: center;
+            font-size: 14px;
+            color: var(--muted);
+            border-top: 1px solid var(--line);
+            margin-top: 60px;
+        }
+
+        @media(max-width: 700px) {
+            .problem-card {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .problem-img {
+                margin: 0 auto;
+            }
+            .header-flex {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- RGB TOP ANIMATED BAR -->
+<div class="rgb-top-bar"></div>
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <a href="index.html" class="logo">
+    <img src="images/co-fix-logo.png" alt="Co-Fix Logo">
+  </a>
+
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="report.html">Report Problem</a></li>
+    <li><a href="voulnteer.html">Volunteer</a></li>
+    <li><button class="nav-btn" id="themeToggle" title="Toggle Theme"><i class="fa-solid fa-moon"></i></button></li>
+  </ul>
+</div>
+
+<div class="container">
+    <div class="header-flex">
+        <div class="header">
+            <h1>Reported Problems & Notifications 🚨</h1>
+            <p>Review all submitted community issues and track their active status</p>
+        </div>
+        <div class="action-btns">
+            <a href="index.html" class="btn-custom btn-back"><i class="fa-solid fa-arrow-left"></i> Home</a>
+            <button class="btn-custom btn-clear" onclick="clearNotifications()"><i class="fa-solid fa-trash"></i> Clear All (0)</button>
+        </div>
+    </div>
+
+    <div class="problems-list" id="problemsContainer">
+        <!-- يتم تعبئة البلاغات تلقائياً من الـ JavaScript -->
+    </div>
+</div>
+
+<footer>
+    <p>© 2026 CO-FIX — Built with care for a better world 🌍</p>
+</footer>
+
+<script>
+// Theme Toggle Setup
+const themeToggle = document.getElementById('themeToggle');
+if(localStorage.getItem("cofix-theme")==="dark"){
+  document.body.classList.add("dark");
+  themeToggle.innerHTML='<i class="fa-solid fa-sun"></i>';
+}
+themeToggle.onclick=()=>{
+  document.body.classList.toggle("dark");
+  const dark=document.body.classList.contains("dark");
+  themeToggle.innerHTML= dark ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+  localStorage.setItem("cofix-theme", dark?"dark":"light");
+};
+
+// Load Problems & Display
+const container = document.getElementById('problemsContainer');
+const problems = JSON.parse(localStorage.getItem('problems')) || [];
+
+if (problems.length === 0) {
+    container.innerHTML = `
+        <div class="empty-state">
+            <i class="fa-regular fa-folder-open" style="font-size: 50px; margin-bottom: 15px; color: #38bdf8;"></i>
+            <p>No reports submitted yet. Your notifications list is clear!</p>
+        </div>
+    `;
+} else {
+    container.innerHTML = problems.map(prob => `
+        <div class="problem-card">
+            <div class="problem-info">
+                <h3><i class="fa-solid fa-triangle-exclamation"></i> ${prob.type || 'General Issue'}</h3>
+                <p><span>Name:</span> ${prob.name || 'Anonymous'}</p>
+                <p><span>Area:</span> ${prob.area || 'Not specified'}</p>
+                <p><span>Details:</span> ${prob.details || 'No details provided'}</p>
+                ${prob.map ? `<p><span>Map:</span> <a href="${prob.map}" target="_blank" style="color: var(--cyan); text-decoration: underline;">View on Google Maps</a></p>` : ''}
+            </div>
+            <div>
+                ${prob.image ? `<img src="${prob.image}" class="problem-img" alt="Problem Image">` : `<div class="problem-img no-image">No Image</div>`}
+            </div>
+        </div>
+    `).join('');
+}
+
+// Function to clear all notifications and reset badge count to 0
+function clearNotifications() {
+    if (confirm("Are you sure you want to clear all reported problems?")) {
+        localStorage.removeItem('problems');
+        location.reload();
+    }
+}
+</script>
+
+</body>
+</html>
